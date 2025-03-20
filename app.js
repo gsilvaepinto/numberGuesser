@@ -1,61 +1,83 @@
+const container = document.querySelector('#container');
 const input = document.querySelector('#guess');
-const buttonInput = document.querySelector('#submit');
-let container = document.querySelector(".container");
-const resetButton = document.querySelector("#reset");
-let random = Math.floor(Math.random() * 100) + 1;
-let counter = 0;
-let isGameOver = false;
+const submitButton = document.querySelector('#submit');
+const resetButton = document.querySelector('#reset');
 
+let counter = 0;
+let random = Math.floor(Math.random() * 100) + 1;
 
 resetButton.style.display = 'none';
 
-buttonInput.addEventListener('click', checkGuess);
 input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter'){
-        checkGuess();
+        guessNumber();
     }
 })
 
-function checkGuess(){
-    let userGuess = parseInt(input.value.trim());
-    
-    document.querySelectorAll(".feedback").forEach(el => el.remove());
+function guessNumber(){
+    let guess = parseInt(input.value.trim());
 
-    let message = document.createElement('p');
+    document.querySelectorAll('.feedback').forEach((el) => el.remove());
+
+    let attempt = document.createElement('p');
+    let message = document.createElement('span');
     message.classList.add('feedback');
 
-    if (isNaN(userGuess) || input.value.trim() === '') {
-        message.textContent = 'Please enter a number.';
+    if (isNaN(guess)){
+        message.textContent = 'Please insert a number.';
         container.appendChild(message);
         return;
     }
-    if (userGuess < random) {
-        counter++;
-        message.textContent = `Secret number is higher. ${counter} tries.`;
-    } else if (userGuess > random) {
-        counter++;
-        message.textContent = `Secret number is lower. ${counter} tries.`;
-    } else {
-        counter++;
-        message.textContent = `Congratulations! You guessed it in ${counter} tries.`;
-        input.disabled = true;
-        buttonInput.disabled = true;
-        resetButton.style.display = 'inline';
-        isGameOver = true;
+    if (guess < 0 || guess > 100){
+        message.textContent = 'Please insert a number between 0 and 100.'
+        container.appendChild(message);
+        return;
     }
+    if (guess < random){
+        counter++;
+        message.textContent = `Secret number is higher. ${attemptMessage(counter)}`
+        attempt.textContent = `You guessed: ${guess}`;
+        container.appendChild(attempt);
+    }
+    else if (guess > random){
+        counter++;
+        message.textContent = `Secret number is lower. ${attemptMessage(counter)}`;
+        attempt.textContent = `You guessed: ${guess}`;
+        container.appendChild(attempt);
+    }
+    else if (guess === random){
+        counter++;
+        message.textContent = `Congratulations! You guessed it in ${attemptMessage(counter)}`;
+        attempt.textContent = `You guessed: ${guess}`;
+        container.appendChild(attempt);
 
+        resetButton.style.display = 'inline';
+        submitButton.style.display = 'none';
+    }
     container.appendChild(message);
 }
 
-resetButton.addEventListener('click', resetGame);
-
 function resetGame(){
-    input.disabled = false;
-    buttonInput.disabled = false;
-    counter = 0;
-    document.querySelectorAll(".feedback").forEach(el => el.remove());
+    container.querySelectorAll('p').forEach((element) => {
+        element.remove();
+    })
+
+    document.querySelectorAll('.feedback').forEach((el) => el.remove());
+
     input.value = '';
-    random = Math.floor(Math.random() * 100) + 1;
+    counter = 0;
+    submitButton.style.display = 'inline';
     resetButton.style.display = 'none';
-    isGameOver = false;
+    random = Math.floor(Math.random() * 100) + 1;
 }
+
+function attemptMessage(counter){
+    if (counter === 1){
+        return `${counter} try.`
+    } else {
+        return `${counter} tries.`
+    }
+}
+
+submitButton.addEventListener('click', guessNumber);
+resetButton.addEventListener('click', resetGame);
