@@ -12,9 +12,9 @@ A simple JavaScript-based number guessing game where the player has to guess a r
 - Validates input to ensure it's a number within the correct range.
 - Removes previous feedback before displaying new hints.
 
-## Screenshot
+## Preview
 
-![Game Screenshot](screenshot.jpg) *(Add your screenshot here)*
+![Image](https://github.com/user-attachments/assets/f0dd5d28-f942-4341-a722-d02eec794f87)
 
 ## Technologies Used
 
